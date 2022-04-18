@@ -1,12 +1,9 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "cli": {
-    "analytics": "d11c478e-d7ba-4a2a-a191-d84aee3d5198"
-  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "testNgRX": {
+    "web-cat-app": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -20,11 +17,12 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/test-ng-rx",
+            "outputPath": "dist/web-cat-app",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
+            "aot": true,
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -34,12 +32,25 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
             "scripts": [
-              "node_modules/jquery/dist/jquery.js",
-              "node_modules/bootstrap/dist/js/bootstrap.js"
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
             ]
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -51,42 +62,25 @@
                   "maximumWarning": "2kb",
                   "maximumError": "4kb"
                 }
-              ],
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "outputHashing": "all"
-            },
-            "development": {
-              "buildOptimizer": false,
-              "optimization": false,
-              "vendorChunk": true,
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true
+              ]
             }
-          },
-          "defaultConfiguration": "production"
+          }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "web-cat-app:build"
+          },
           "configurations": {
             "production": {
-              "browserTarget": "testNgRX:build:production"
-            },
-            "development": {
-              "browserTarget": "testNgRX:build:development"
+              "browserTarget": "web-cat-app:build:production"
             }
-          },
-          "defaultConfiguration": "development"
+          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "testNgRX:build"
+            "browserTarget": "web-cat-app:build"
           }
         },
         "test": {
@@ -105,9 +99,37 @@
             ],
             "scripts": []
           }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "tsconfig.app.json",
+              "tsconfig.spec.json",
+              "e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "e2e/protractor.conf.js",
+            "devServerTarget": "web-cat-app:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "web-cat-app:serve:production"
+            }
+          }
         }
       }
     }
   },
-  "defaultProject": "testNgRX"
+  "defaultProject": "web-cat-app",
+  "cli": {
+    "analytics": "dffac1ec-51a9-47c1-93d6-233efae567f4"
+  }
 }
